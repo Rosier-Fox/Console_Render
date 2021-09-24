@@ -55,12 +55,14 @@ class Display{
         }
 
         void blank(Colour colour){
-            //loop through all pixels and set them to colour
+            //loop through all pixels and set them to colour | i dont think i can use range for loops here
             for (unsigned long y{0}; y < buffer.size(); y++){
                 for (unsigned long x{0}; x < buffer[y].size(); x++){
                 buffer[y][x] = colour;
                 }
             }
+
+
         }
 
         void render() {
@@ -71,7 +73,7 @@ class Display{
                     std::cout << "\x1b[" << buffer[y][x] << ";" << buffer[y][x] + 10 << "m";
                     // print character
                     std::cout << "#";
-                    //reset colour
+                    //reset colour | this f*cks stuff up if i do it after this loop. might be invis characters?
                     std::cout << "\x1b[0m";
 
                 }
