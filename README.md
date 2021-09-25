@@ -1,5 +1,10 @@
 ----==== TODO ====----  
-  
+IMPORTANT!!!
+FIX THE FLICKERING SOMEHOW!! IT HURTS!!
+
+
+
+
 add more draw functions   
 line  
 circle  
