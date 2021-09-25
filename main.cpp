@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 enum Colour{
         colour_black = 30,
@@ -23,6 +25,10 @@ enum Colour{
 class Display{
     private:
         std::vector<std::vector<int>> buffer;
+
+        int frameRate{30};
+        std::chrono::steady_clock::time_point oldTime{std::chrono::steady_clock::now()};
+        std::chrono::steady_clock::time_point currentTime;
 
     public:
         // constructor function
@@ -54,11 +60,11 @@ class Display{
             }
         }
 
-        void blank(Colour colour){
+        void clear(Colour colour){
             //loop through all pixels and set them to colour | i dont think i can use range for loops here
             for (unsigned long y{0}; y < buffer.size(); y++){
                 for (unsigned long x{0}; x < buffer[y].size(); x++){
-                buffer[y][x] = colour;
+                    buffer[y][x] = colour;
                 }
             }
 
@@ -66,6 +72,8 @@ class Display{
         }
 
         void render() {
+            // clear console
+            system("clear");
             //loop thru all pixels in buffer
             for (unsigned long y{0}; y < buffer.size(); y++){
                 for (unsigned long x{0}; x < buffer[y].size(); x++){
@@ -79,6 +87,11 @@ class Display{
                 }
                 std::cout << "\n";
             }
+            // calculate time since last render and wait if needed to match framerate
+            currentTime = std::chrono::steady_clock::now();
+            int timeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - oldTime).count();
+            oldTime = std::chrono::steady_clock::now();
+            std::this_thread::sleep_for(std::chrono::milliseconds((1000 / frameRate) - timeElapsed));
         }
 };
 
@@ -88,8 +101,11 @@ class Display{
 
 int main(){
     Display screen{64, 32};
-    screen.rect(5, 3, 5, 10, colour_red, false);
-    screen.blank(colour_cyan);
-    screen.render();
+    // logic loop
+    while (true) {
+        screen.clear(colour_cyan);
+        screen.rect(5, 5, 16, 6, colour_red, true);
+        screen.render();
+    }
     return 0;
 }
